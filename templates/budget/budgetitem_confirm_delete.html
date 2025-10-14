@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete Budget Item{% endblock %}
+
+{% block content %}
+<h1>Delete Budget Item</h1>
+
+<div class="alert alert-danger">
+    <p>Are you sure you want to delete "{{ object.name }}"?</p>
+</div>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Yes, Delete</button>
+    <a href="{% url 'budget:budget_list' object.event.pk %}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}
+

@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete Guest{% endblock %}
+
+{% block content %}
+<h1>Delete Guest</h1>
+
+<div class="alert alert-danger">
+    <p>Are you sure you want to delete "{{ object.first_name }} {{ object.last_name }}"?</p>
+    <p>This will also delete their RSVP if it exists.</p>
+</div>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Yes, Delete</button>
+    <a href="{% url 'guests:guest_list' object.event.pk %}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}
+

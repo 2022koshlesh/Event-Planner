@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}Event Vendors - {{ event.title }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Vendors for {{ event.title }}</h1>
+    <div>
+        <a href="{% url 'vendors:eventvendor_create' event.pk %}" class="btn btn-primary">Assign Vendor</a>
+        <a href="{% url 'events:event_detail' event.pk %}" class="btn btn-secondary">Back to Event</a>
+    </div>
+</div>
+
+{% if event_vendors %}
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Vendor</th>
+                    <th>Category</th>
+                    <th>Service</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ev in event_vendors %}
+                    <tr>
+                        <td>{{ ev.vendor.name }}</td>
+                        <td>{{ ev.vendor.get_category_display }}</td>
+                        <td>{{ ev.service_description|truncatewords:10 }}</td>
+                        <td>${{ ev.contract_amount }}</td>
+                        <td><span class="badge bg-info">{{ ev.get_status_display }}</span></td>
+                        <td>
+                            <a href="{% url 'vendors:eventvendor_edit' ev.pk %}" class="btn btn-sm btn-warning">Edit</a>
+                            <a href="{% url 'vendors:eventvendor_delete' ev.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <div class="alert alert-info">
+        No vendors assigned to this event yet. <a href="{% url 'vendors:eventvendor_create' event.pk %}">Assign a vendor</a>!
+    </div>
+{% endif %}
+{% endblock %}
+

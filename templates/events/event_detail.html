@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ event.title }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>{{ event.title }}</h1>
+    <div>
+        <a href="{% url 'events:event_edit' event.pk %}" class="btn btn-warning">Edit</a>
+        <a href="{% url 'events:event_delete' event.pk %}" class="btn btn-danger">Delete</a>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <h5>Event Details</h5>
+        <p><strong>Type:</strong> {{ event.get_event_type_display }}</p>
+        <p><strong>Status:</strong> {{ event.get_status_display }}</p>
+        <p><strong>Start:</strong> {{ event.start_date|date:"M d, Y H:i" }}</p>
+        <p><strong>End:</strong> {{ event.end_date|date:"M d, Y H:i" }}</p>
+        <p><strong>Venue:</strong> {{ event.venue }}</p>
+        <p><strong>Location:</strong> {{ event.location }}</p>
+        <p><strong>Capacity:</strong> {{ event.max_capacity }}</p>
+        <p><strong>Description:</strong> {{ event.description }}</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Guests</h5>
+                <a href="{% url 'guests:guest_list' event.pk %}" class="btn btn-primary">Manage Guests</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Budget</h5>
+                <a href="{% url 'budget:budget_list' event.pk %}" class="btn btn-primary">Manage Budget</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Vendors</h5>
+                <a href="{% url 'vendors:eventvendor_list' event.pk %}" class="btn btn-primary">Manage Vendors</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

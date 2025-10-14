@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Vendors{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Vendors</h1>
+    <a href="{% url 'vendors:vendor_create' %}" class="btn btn-primary">Add Vendor</a>
+</div>
+
+{% if vendors %}
+    <div class="row">
+        {% for vendor in vendors %}
+            <div class="col-md-6 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ vendor.name }}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">{{ vendor.get_category_display }}</h6>
+                        <p class="mb-1"><strong>Contact:</strong> {{ vendor.contact_person }}</p>
+                        <p class="mb-1"><strong>Email:</strong> {{ vendor.email }}</p>
+                        <p class="mb-1"><strong>Phone:</strong> {{ vendor.phone_number }}</p>
+                        {% if vendor.notes %}
+                            <p class="mb-3"><small>{{ vendor.notes|truncatewords:20 }}</small></p>
+                        {% endif %}
+                        <a href="{% url 'vendors:vendor_edit' vendor.pk %}" class="btn btn-sm btn-warning">Edit</a>
+                        <a href="{% url 'vendors:vendor_delete' vendor.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="alert alert-info">
+        No vendors yet. <a href="{% url 'vendors:vendor_create' %}">Add your first vendor</a>!
+    </div>
+{% endif %}
+{% endblock %}
+
