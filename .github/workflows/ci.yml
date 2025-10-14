@@ -1,0 +1,45 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ master, main, develop ]
+  pull_request:
+    branches: [ master, main, develop ]
+
+jobs:
+  lint:
+    name: Linting & Code Quality
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+        cache: 'pip'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install flake8 black isort
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        
+    - name: Run flake8
+      run: |
+        flake8 . --count --max-line-length=120 --exclude=migrations,venv,env --statistics --show-source
+        
+    - name: Run black check
+      run: |
+        black --check --line-length=120 --exclude=migrations .
+        
+    - name: Run isort check
+      run: |
+        isort --check-only --profile=black --line-length=120 --skip=migrations .
+        
+    - name: Check for debugger statements
+      run: |
+        ! grep -r "import pdb\|pdb.set_trace()\|breakpoint()" --include="*.py" --exclude-dir=venv --exclude-dir=env || exit 1
+

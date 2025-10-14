@@ -243,51 +243,105 @@ event_planning_platform/
 │   ├── models.py              # Custom User model
 │   ├── views.py               # Login, register, profile
 │   ├── forms.py
-│   └── urls.py
+│   ├── urls.py
+│   └── tests/
+│       ├── test_models.py
+│       ├── test_views.py
+│       └── test_forms.py
 ├── events/                    # Core event management
 │   ├── models.py              # Event, EventStaff
 │   ├── views.py               # CRUD for events
 │   ├── forms.py
-│   └── urls.py
+│   ├── urls.py
+│   └── tests/
+│       ├── test_models.py
+│       ├── test_views.py
+│       └── test_forms.py
 ├── guests/                    # Guest list and RSVP management
 │   ├── models.py              # Guest, RSVP
 │   ├── views.py               # Guest management, RSVP handling
 │   ├── forms.py
-│   └── urls.py
+│   ├── urls.py
+│   └── tests/
+│       ├── test_models.py
+│       ├── test_views.py
+│       └── test_forms.py
 ├── budget/                    # Budget tracking
 │   ├── models.py              # BudgetCategory, BudgetItem
 │   ├── views.py               # Budget CRUD, reports
 │   ├── forms.py
-│   └── urls.py
+│   ├── urls.py
+│   └── tests/
+│       ├── test_models.py
+│       ├── test_views.py
+│       └── test_forms.py
 ├── vendors/                   # Vendor management
 │   ├── models.py              # Vendor, EventVendor, VendorCommunication
 │   ├── views.py               # Vendor CRUD, communication
 │   ├── forms.py
-│   └── urls.py
+│   ├── urls.py
+│   └── tests/
+│       ├── test_models.py
+│       ├── test_views.py
+│       └── test_forms.py
 ├── timeline/                  # Timeline and task management
 │   ├── models.py              # Timeline, TimelineCategory
 │   ├── views.py               # Timeline CRUD, calendar view
 │   ├── forms.py
-│   └── urls.py
+│   ├── urls.py
+│   └── tests/
+│       ├── test_models.py
+│       ├── test_views.py
+│       └── test_forms.py
 ├── seating/                   # Seating arrangement
 │   ├── models.py              # SeatingLayout, Table, TableAssignment
 │   ├── views.py               # Seating planner interface
 │   ├── forms.py
-│   └── urls.py
+│   ├── urls.py
+│   └── tests/
+│       ├── test_models.py
+│       ├── test_views.py
+│       └── test_forms.py
 ├── communications/            # Notifications and messaging
 │   ├── models.py              # EventAnnouncement, Notification
 │   ├── views.py               # Send messages, notifications
 │   ├── tasks.py               # Celery tasks for emails
-│   └── urls.py
+│   ├── urls.py
+│   └── tests/
+│       ├── test_models.py
+│       ├── test_views.py
+│       └── test_tasks.py
 ├── documents/                 # File management
 │   ├── models.py              # EventDocument
 │   ├── views.py               # Upload, download, delete
-│   └── urls.py
-└── core/                      # Shared utilities
-    ├── middleware.py
-    ├── decorators.py
-    ├── mixins.py
-    └── utils.py
+│   ├── urls.py
+│   └── tests/
+│       ├── test_models.py
+│       └── test_views.py
+├── core/                      # Shared utilities
+│   ├── middleware.py
+│   ├── decorators.py
+│   ├── mixins.py
+│   ├── utils.py
+│   └── tests/
+│       ├── test_middleware.py
+│       ├── test_decorators.py
+│       └── test_utils.py
+└── tests/                     # Integration, E2E, and System tests
+    ├── conftest.py
+    ├── factories.py
+    ├── integration/
+    │   ├── test_guest_rsvp_integration.py
+    │   ├── test_budget_vendor_integration.py
+    │   └── test_email_integration.py
+    ├── e2e/
+    │   ├── test_authentication.py
+    │   ├── test_event_management.py
+    │   └── test_rsvp_flow.py
+    └── system/
+        ├── test_performance.py
+        ├── test_security.py
+        └── locustfile.py
 ```
 
 ## Feature Implementation Breakdown
@@ -298,10 +352,20 @@ event_planning_platform/
 - Initialize Django project
 - Configure PostgreSQL database
 - Set up virtual environment
-- Install dependencies
+- Install dependencies (requirements.txt)
 - Configure static files and media handling
 - Set up basic templates structure
 - Implement base.html with navigation
+- **Set up CI/CD:**
+  - Configure git hooks (.githooks/pre-commit)
+  - Set up GitHub Actions workflow
+  - Configure linters (flake8, black, isort)
+  - Install testing framework (pytest, pytest-django)
+- **Testing Setup:**
+  - Configure pytest.ini and .coveragerc
+  - Set up test directory structure
+  - Create base fixtures in conftest.py
+  - Set up Factory Boy factories
 
 #### 1.2 User Authentication
 - Custom User model with roles
@@ -311,12 +375,29 @@ event_planning_platform/
 - User profile management
 - Profile picture upload
 - Email verification
+- **Unit Tests:**
+  - Test User model creation and validation
+  - Test authentication views (login, logout, register)
+  - Test password reset flow
+  - Test form validation
+  - Coverage target: 90%+
+- **Integration Tests:**
+  - Test complete registration flow
+  - Test email verification process
+  - Test profile picture upload
 
 #### 1.3 Dashboard
 - Main dashboard layout
 - User-specific content based on role
 - Recent events overview
 - Quick stats (upcoming events, pending RSVPs, budget status)
+- **Unit Tests:**
+  - Test dashboard view permissions
+  - Test stats calculation methods
+  - Coverage target: 85%+
+- **E2E Tests:**
+  - Test dashboard navigation
+  - Test role-based content display
 
 ### Phase 2: Event Management (Weeks 3-4)
 
@@ -327,11 +408,31 @@ event_planning_platform/
 - Update event information
 - Delete/Archive events
 - Event status management
+- **Unit Tests:**
+  - Test Event model CRUD operations
+  - Test event validation (dates, capacity)
+  - Test event views (list, create, update, delete)
+  - Test event filtering and search
+  - Test form validation
+  - Coverage target: 90%+
+- **Integration Tests:**
+  - Test event creation workflow
+  - Test event archiving with related data
+- **E2E Tests:**
+  - Test complete event creation flow
+  - Test event editing flow
 
 #### 2.2 Event Collaboration
 - Add team members to events
 - Assign roles and permissions
 - Activity log for events
+- **Unit Tests:**
+  - Test EventStaff model
+  - Test permission checks
+  - Test activity logging
+  - Coverage target: 85%+
+- **Integration Tests:**
+  - Test team member addition and permission enforcement
 
 ### Phase 3: Guest Management & RSVPs (Weeks 5-6)
 
@@ -341,6 +442,16 @@ event_planning_platform/
 - Guest categories and grouping
 - Search and filter guests
 - Export guest lists
+- **Unit Tests:**
+  - Test Guest model CRUD
+  - Test CSV import validation
+  - Test guest filtering logic
+  - Test export functionality
+  - Coverage target: 90%+
+- **Integration Tests:**
+  - Test bulk import with 1000+ guests
+  - Test CSV import with invalid data
+  - Test guest export formats
 
 #### 3.2 RSVP System
 - RSVP form (public link)
@@ -349,6 +460,22 @@ event_planning_platform/
 - Plus-one handling
 - Meal preference selection
 - RSVP statistics and reports
+- **Unit Tests:**
+  - Test RSVP model validation
+  - Test RSVP form validation
+  - Test RSVP statistics calculations
+  - Coverage target: 95%+ (critical path)
+- **Integration Tests:**
+  - Test RSVP submission with email confirmation
+  - Test duplicate RSVP prevention
+  - Test RSVP reminder scheduling
+- **E2E Tests:**
+  - Test complete RSVP submission flow
+  - Test RSVP modification flow
+  - Test public RSVP link access
+- **System Tests:**
+  - Test concurrent RSVP submissions
+  - Test RSVP submission rate limiting
 
 ### Phase 4: Budget Management (Week 7)
 
@@ -361,6 +488,20 @@ event_planning_platform/
 - Visual charts (pie, bar graphs)
 - Budget alerts (over-budget warnings)
 - Export budget reports (PDF/Excel)
+- **Unit Tests:**
+  - Test BudgetItem model calculations
+  - Test budget totaling logic
+  - Test budget variance calculations
+  - Test category-based grouping
+  - Test alert threshold logic
+  - Coverage target: 90%+
+- **Integration Tests:**
+  - Test budget calculation across multiple items
+  - Test PDF report generation
+  - Test Excel export
+- **E2E Tests:**
+  - Test budget management workflow
+  - Test budget report generation
 
 ### Phase 5: Vendor Management (Weeks 8-9)
 
@@ -370,6 +511,13 @@ event_planning_platform/
 - Vendor categories
 - Rating and reviews
 - Vendor search
+- **Unit Tests:**
+  - Test Vendor model CRUD
+  - Test vendor search functionality
+  - Test rating calculations
+  - Coverage target: 85%+
+- **Integration Tests:**
+  - Test vendor search across large dataset
 
 #### 5.2 Event-Vendor Coordination
 - Assign vendors to events
@@ -378,6 +526,18 @@ event_planning_platform/
 - Vendor communication inbox
 - File attachments
 - Vendor performance tracking
+- **Unit Tests:**
+  - Test EventVendor model
+  - Test payment tracking logic
+  - Test vendor messaging
+  - Test file upload validation
+  - Coverage target: 90%+
+- **Integration Tests:**
+  - Test vendor assignment workflow
+  - Test vendor communication with email notifications
+  - Test contract file storage and retrieval
+- **E2E Tests:**
+  - Test vendor assignment and communication flow
 
 ### Phase 6: Timeline & Task Management (Week 10)
 
@@ -390,6 +550,19 @@ event_planning_platform/
 - Progress tracking
 - Reminders and notifications
 - Checklist templates
+- **Unit Tests:**
+  - Test Timeline model CRUD
+  - Test task dependency validation
+  - Test progress calculation
+  - Test reminder scheduling logic
+  - Coverage target: 85%+
+- **Integration Tests:**
+  - Test task assignment with notifications
+  - Test reminder email delivery
+  - Test calendar view data aggregation
+- **E2E Tests:**
+  - Test timeline management workflow
+  - Test task creation and assignment
 
 ### Phase 7: Seating Arrangements (Weeks 11-12)
 
@@ -401,6 +574,20 @@ event_planning_platform/
 - Print seating chart
 - Table labels generation
 - Seat cards generation
+- **Unit Tests:**
+  - Test SeatingLayout model
+  - Test Table model capacity validation
+  - Test TableAssignment model
+  - Test seat assignment validation
+  - Test table overflow detection
+  - Coverage target: 85%+
+- **Integration Tests:**
+  - Test seating arrangement with guest assignments
+  - Test print layout generation
+- **E2E Tests:**
+  - Test seating arrangement drag-and-drop workflow
+  - Test guest assignment to tables
+  - Test seating chart printing
 
 ### Phase 8: Communication & Notifications (Week 13)
 
@@ -411,12 +598,34 @@ event_planning_platform/
 - Notification center
 - Real-time notifications
 - Email scheduling
+- **Unit Tests:**
+  - Test EventAnnouncement model
+  - Test Notification model
+  - Test email template rendering
+  - Test recipient filtering logic
+  - Coverage target: 85%+
+- **Integration Tests:**
+  - Test bulk email sending
+  - Test notification delivery
+  - Test email scheduling with Celery
+- **E2E Tests:**
+  - Test sending announcement to guests
+  - Test notification center display
 
 #### 8.2 Automated Reminders
 - RSVP reminders
 - Payment reminders (vendors)
 - Timeline task reminders
 - Event countdown notifications
+- **Unit Tests:**
+  - Test reminder scheduling logic
+  - Test reminder trigger conditions
+  - Coverage target: 90%+
+- **Integration Tests:**
+  - Test automated reminder delivery
+  - Test reminder task execution (Celery)
+- **System Tests:**
+  - Test reminder delivery at scale
 
 ### Phase 9: Reports & Analytics (Week 14)
 
@@ -427,6 +636,17 @@ event_planning_platform/
 - Vendor performance reports
 - Guest demographics
 - Export options (PDF, Excel, CSV)
+- **Unit Tests:**
+  - Test report data aggregation
+  - Test statistical calculations
+  - Test export format generation
+  - Coverage target: 85%+
+- **Integration Tests:**
+  - Test complete report generation workflow
+  - Test large dataset report generation
+  - Test multiple export formats
+- **System Tests:**
+  - Test report generation performance with large datasets
 
 ### Phase 10: Polish & Deployment (Weeks 15-16)
 
@@ -436,22 +656,43 @@ event_planning_platform/
 - Loading states
 - Error handling
 - Form validation
+- **E2E Tests:**
+  - Test responsive design on multiple screen sizes
+  - Test mobile navigation
+  - Test error states
+- **System Tests:**
+  - Accessibility testing (Pa11y)
+  - Cross-browser testing (Chrome, Firefox, Safari, Edge)
 
-#### 10.2 Testing
-- Unit tests
-- Integration tests
-- User acceptance testing
-- Security audit
+#### 10.2 Comprehensive Testing
+- **Complete unit test coverage (target: 80%+)**
+- **Complete integration test suite**
+- **Complete E2E test suite for all critical paths**
+- **System testing:**
+  - Performance testing (page load < 2s)
+  - Load testing (Locust) - 100 concurrent users
+  - Security testing (Bandit, Safety)
+  - Penetration testing
+- **User acceptance testing (UAT)**
+- **Security audit**
+- **Code review and refactoring**
+- See `docs/testing_strategy.md` for details
 
 #### 10.3 Deployment
 - Configure production settings
 - Set up web server (Gunicorn)
 - Configure Nginx
-- Set up SSL
+- Set up SSL (Let's Encrypt)
 - Database migration to production
-- Configure email service
-- Set up monitoring and logging
-- Backup strategy
+- Configure email service (SendGrid/Mailgun)
+- Set up Celery and Redis
+- Set up logging (Sentry for error tracking)
+- Configure monitoring (New Relic/DataDog)
+- Backup strategy (automated daily backups)
+- **Set up branch protection rules** (see `docs/branch_protection_setup.md`)
+- **Configure production CI/CD pipeline**
+- **Set up staging environment**
+- **Final security scan**
 
 ## Key Features Detail
 
@@ -675,42 +916,150 @@ event_planning_platform/
 
 ## Testing Strategy
 
+**For comprehensive testing details, see `docs/testing_strategy.md`**
+
+### Test Coverage Goals
+- **Overall Coverage:** 80%+ minimum
+- **Critical Paths (Payment, RSVP, Auth):** 95%+
+- **Models & Business Logic:** 90%+
+- **Views & API:** 85%+
+
+### Testing Pyramid
+- **70% Unit Tests** - Fast, isolated component testing
+- **20% Integration Tests** - Component interaction testing
+- **10% E2E Tests** - Complete user workflow testing
+
 ### Unit Tests
-- Model tests (validation, methods)
-- View tests (HTTP responses)
-- Form tests (validation)
+- Model tests (validation, methods, relationships)
+- View tests (HTTP responses, permissions)
+- Form tests (validation, error handling)
+- Serializer tests (API data validation)
 - Utility function tests
 
 ### Integration Tests
-- User workflows
-- RSVP submission flow
-- Budget calculation
-- Email sending
+- User workflows with database
+- RSVP submission with email notifications
+- Budget calculation across multiple items
+- Vendor assignment and communication
+- File upload and storage
+- API endpoint integration
+- Celery task execution
 
-### Performance Tests
-- Page load times
-- Database query optimization
-- Large guest list handling
-- Concurrent user access
+### End-to-End (E2E) Tests
+- User authentication flow (register, login, password reset)
+- Complete event creation and management
+- Guest RSVP submission flow
+- Budget tracking workflow
+- Seating arrangement workflow
+- Vendor coordination workflow
+
+### System Tests
+- **Performance Testing:**
+  - Page load times (<2s target)
+  - Database query optimization (Django Debug Toolbar)
+  - Large guest list handling (10,000+ guests)
+  - API response times
+- **Load Testing:**
+  - 100 concurrent users (Locust)
+  - 1000 requests/minute capacity
+- **Security Testing:**
+  - SQL injection prevention
+  - XSS prevention
+  - CSRF protection
+  - Authentication enforcement
+  - Permission checks (Bandit, Safety)
+- **Accessibility Testing:**
+  - WCAG 2.1 AA compliance (Pa11y)
+- **Cross-Browser Testing:**
+  - Chrome, Firefox, Safari, Edge
+
+### CI/CD Integration
+- **Pre-commit Hooks** (.githooks/pre-commit)
+  - Linting (flake8)
+  - Code formatting (black)
+  - Import sorting (isort)
+- **GitHub Actions** (.github/workflows/ci.yml)
+  - Linting and code quality checks
+  - Unit and integration tests (Python 3.10, 3.11, 3.12)
+  - Security scanning
+  - Coverage reporting
+  - Build verification
+
+### Test Tools
+- **pytest** - Testing framework
+- **pytest-django** - Django integration
+- **factory-boy** - Test data generation
+- **Selenium/Playwright** - E2E browser automation
+- **Locust** - Load testing
+- **coverage.py** - Code coverage
+- **pytest-cov** - Coverage plugin
 
 ## Deployment Checklist
 
+### Pre-Deployment
+- [ ] All tests passing (unit, integration, E2E)
+- [ ] Code coverage above 80%
+- [ ] Security scan completed (no critical issues)
+- [ ] Performance testing completed
+- [ ] UAT sign-off received
+- [ ] Branch protection rules configured
+- [ ] CI/CD pipeline fully functional
+
+### Django Configuration
 - [ ] Set DEBUG = False
 - [ ] Configure ALLOWED_HOSTS
-- [ ] Set up production database
-- [ ] Configure static files with WhiteNoise or CDN
+- [ ] Set up production database (PostgreSQL)
+- [ ] Configure SECRET_KEY from environment
+- [ ] Set up database connection pooling
+- [ ] Configure static files (WhiteNoise or CDN)
 - [ ] Configure media files (AWS S3)
-- [ ] Set up email backend
+- [ ] Set up email backend (SendGrid/Mailgun)
 - [ ] Configure Celery and Redis
-- [ ] Set up logging
-- [ ] Configure HTTPS
-- [ ] Set up backup system
-- [ ] Configure monitoring (Sentry)
-- [ ] Set up CI/CD pipeline
+- [ ] Set up logging (file + Sentry)
+- [ ] Configure HTTPS (SSL certificate)
+- [ ] Enable security middleware
+- [ ] Set up CORS if needed
+
+### Infrastructure
+- [ ] Set up web server (Gunicorn with systemd)
+- [ ] Configure reverse proxy (Nginx)
+- [ ] Set up SSL certificate (Let's Encrypt)
+- [ ] Configure firewall rules
+- [ ] Set up Redis for caching and Celery
+- [ ] Configure automated backups (daily)
+- [ ] Set up monitoring (New Relic/DataDog)
+- [ ] Configure error tracking (Sentry)
+- [ ] Set up uptime monitoring
+- [ ] Configure log aggregation
+
+### Data & Users
 - [ ] Create admin superuser
 - [ ] Load initial data (categories, templates)
-- [ ] Performance optimization
-- [ ] Security audit
+- [ ] Set up default user roles
+- [ ] Configure email templates
+
+### Testing & Validation
+- [ ] Run final test suite on staging
+- [ ] Smoke testing on production
+- [ ] Verify all integrations working
+- [ ] Test email delivery
+- [ ] Test file uploads
+- [ ] Verify Celery tasks running
+- [ ] Check all external API connections
+
+### Documentation
+- [ ] API documentation complete
+- [ ] Deployment guide written
+- [ ] User manual available
+- [ ] Admin guide available
+- [ ] Runbook for common issues
+
+### Post-Deployment
+- [ ] Monitor error rates (first 24h)
+- [ ] Check performance metrics
+- [ ] Verify backup system working
+- [ ] Review security logs
+- [ ] Collect user feedback
 
 ## Future Enhancements (Post-MVP)
 
