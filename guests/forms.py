@@ -1,5 +1,6 @@
 from django import forms
-from .models import Guest, RSVP
+
+from .models import RSVP, Guest
 
 
 class GuestForm(forms.ModelForm):
@@ -15,4 +16,3 @@ class RSVPForm(forms.ModelForm):
         widgets = {
             "notes": forms.Textarea(attrs={"rows": 3}),
         }
-

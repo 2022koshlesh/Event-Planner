@@ -4,8 +4,8 @@ exclude =
     .git,
     __pycache__,
     */migrations/*,
-    */venv/*,
-    */env/*,
+    venv,
+    env,
     .venv,
     .env,
     build,
@@ -14,15 +14,17 @@ exclude =
     .tox,
     .pytest_cache,
     htmlcov,
-    node_modules
+    node_modules,
+    staticfiles,
+    media
 
 ignore =
-    E203,  # whitespace before ':'
-    E266,  # too many leading '#' for block comment
-    E501,  # line too long (handled by black)
-    W503,  # line break before binary operator
-    W504,  # line break after binary operator
-    F401,  # imported but unused (in __init__.py)
+    E203,
+    E266,
+    E501,
+    W503,
+    W504,
+    F401
 
 per-file-ignores =
     __init__.py:F401

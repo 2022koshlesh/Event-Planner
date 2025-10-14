@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Vendor, EventVendor
+
+from .models import EventVendor, Vendor
 
 
 @admin.register(Vendor)

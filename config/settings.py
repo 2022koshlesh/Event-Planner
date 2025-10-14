@@ -11,11 +11,15 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+
 from decouple import config
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = config("SECRET_KEY", default="django-insecure-1mflzsco(1ja#4tviw+pfm(b^#t16@xf1!#gzah^3d_ui=%yr^")
+SECRET_KEY = config(
+    "SECRET_KEY",
+    default="django-insecure-1mflzsco(1ja#4tviw+pfm(b^#t16@xf1!#gzah^3d_ui=%yr^",
+)
 DEBUG = config("DEBUG", default=True, cast=bool)
 ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="localhost,127.0.0.1").split(",")
 

@@ -10,13 +10,17 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # Configure git to use the .githooks directory
 git config core.hooksPath .githooks
 
-# Make the pre-commit hook executable
+# Make the hooks executable
 chmod +x .githooks/pre-commit
+chmod +x .githooks/pre-push
 
 echo "✓ Git hooks configured successfully!"
 echo ""
-echo "The pre-commit hook will now run automatically before each commit."
-echo "It will check for:"
+echo "The following hooks are now active:"
+echo "  - pre-commit: Runs before each commit"
+echo "  - pre-push: Runs before each push"
+echo ""
+echo "They will check for:"
 echo "  - Linting errors (flake8)"
 echo "  - Code formatting (black)"
 echo "  - Import sorting (isort)"

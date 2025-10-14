@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# Pre-commit hook for Event Planning Platform
-# Runs linting and basic checks before allowing commit
+# Pre-push hook for Event Planning Platform
+# Runs linting and basic checks before allowing push
 
-echo "🔍 Running pre-commit checks..."
+echo "🔍 Running pre-push checks..."
 
 # Colors for output
 RED='\033[0;31m'
@@ -25,16 +25,15 @@ if [[ -z "$VIRTUAL_ENV" ]]; then
     echo -e "${YELLOW}⚠️  Warning: Virtual environment not activated${NC}"
 fi
 
-# Get list of Python files that are staged (excluding venv, migrations, etc.)
-PYTHON_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep '\.py$' | grep -v '^venv/' | grep -v '/migrations/' | grep -v '^env/')
+# Get list of Python files in the repository (excluding venv, migrations, etc.)
+PYTHON_FILES=$(git ls-files '*.py' | grep -v '^venv/' | grep -v '/migrations/' | grep -v '^env/')
 
 if [ -z "$PYTHON_FILES" ]; then
     echo -e "${GREEN}✓ No Python files to check${NC}"
     exit 0
 fi
 
-echo -e "${YELLOW}Checking Python files:${NC}"
-echo "$PYTHON_FILES"
+echo -e "${YELLOW}Checking all Python files in repository...${NC}"
 
 # Run flake8 if available
 if command -v flake8 &> /dev/null; then
@@ -92,23 +91,18 @@ if echo "$PYTHON_FILES" | xargs grep -n "print(" 2>/dev/null; then
     echo -e "${YELLOW}⚠️  Found print() statements. Consider using logging instead${NC}"
 fi
 
-# Check for TODO/FIXME comments
-if echo "$PYTHON_FILES" | xargs grep -n "TODO\|FIXME" 2>/dev/null; then
-    echo -e "${YELLOW}⚠️  Found TODO/FIXME comments${NC}"
-fi
-
 # Final result
 echo ""
 if [ $CHECKS_FAILED -eq 1 ]; then
     echo -e "${RED}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-    echo -e "${RED}❌ Pre-commit checks failed!${NC}"
+    echo -e "${RED}❌ Pre-push checks failed!${NC}"
     echo -e "${RED}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-    echo -e "${YELLOW}Fix the errors above and try again.${NC}"
-    echo -e "${YELLOW}Or use 'git commit --no-verify' to skip checks (not recommended)${NC}"
+    echo -e "${YELLOW}Fix the errors above before pushing.${NC}"
+    echo -e "${YELLOW}Or use 'git push --no-verify' to skip checks (not recommended)${NC}"
     exit 1
 else
     echo -e "${GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-    echo -e "${GREEN}✓ All pre-commit checks passed!${NC}"
+    echo -e "${GREEN}✓ All pre-push checks passed!${NC}"
     echo -e "${GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
     exit 0
 fi

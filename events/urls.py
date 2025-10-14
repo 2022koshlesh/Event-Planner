@@ -1,11 +1,12 @@
 from django.urls import path
+
 from .views import (
     DashboardView,
-    EventListView,
-    EventDetailView,
     EventCreateView,
-    EventUpdateView,
     EventDeleteView,
+    EventDetailView,
+    EventListView,
+    EventUpdateView,
 )
 
 app_name = "events"
@@ -18,4 +19,3 @@ urlpatterns = [
     path("events/<int:pk>/edit/", EventUpdateView.as_view(), name="event_edit"),
     path("events/<int:pk>/delete/", EventDeleteView.as_view(), name="event_delete"),
 ]
-
