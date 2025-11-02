@@ -25,13 +25,11 @@ class InvitationForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         event = kwargs.pop("event", None)
         super().__init__(*args, **kwargs)
-        
+
         if event:
             # Exclude users already invited or the event organizer
             already_invited = Invitation.objects.filter(event=event).values_list("invitee_id", flat=True)
-            self.fields["invitee"].queryset = User.objects.exclude(
-                id__in=list(already_invited) + [event.created_by.id]
-            )
+            self.fields["invitee"].queryset = User.objects.exclude(id__in=list(already_invited) + [event.created_by.id])
 
 
 class RSVPForm(forms.ModelForm):

@@ -8,7 +8,7 @@ from django.views.generic import CreateView, DeleteView, ListView, UpdateView, V
 from events.models import Event
 
 from .forms import InvitationForm, RSVPForm
-from .models import Guest, Invitation, RSVP
+from .models import RSVP, Guest, Invitation
 
 
 class InvitationListView(LoginRequiredMixin, ListView):

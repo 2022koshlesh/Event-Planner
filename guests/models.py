@@ -14,9 +14,7 @@ class Invitation(models.Model):
     ]
 
     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name="invitations")
-    invitee = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="event_invitations"
-    )
+    invitee = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="event_invitations")
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="pending")
     invited_at = models.DateTimeField(auto_now_add=True)
     responded_at = models.DateTimeField(null=True, blank=True)

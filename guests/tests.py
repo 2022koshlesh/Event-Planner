@@ -5,7 +5,7 @@ from django.utils import timezone
 
 from events.models import Event
 
-from .models import Guest, Invitation, RSVP
+from .models import RSVP, Guest, Invitation
 
 User = get_user_model()
 
@@ -18,10 +18,8 @@ class InvitationModelTestCase(TestCase):
         self.organizer = User.objects.create_user(
             username="organizer", email="organizer@example.com", password="testpass123"
         )
-        self.invitee = User.objects.create_user(
-            username="invitee", email="invitee@example.com", password="testpass123"
-        )
-        
+        self.invitee = User.objects.create_user(username="invitee", email="invitee@example.com", password="testpass123")
+
         self.event = Event.objects.create(
             title="Test Event",
             description="Test Description",
@@ -68,7 +66,7 @@ class GuestModelTestCase(TestCase):
         self.guest_user = User.objects.create_user(
             username="guestuser", email="guest@example.com", password="testpass123"
         )
-        
+
         self.event = Event.objects.create(
             title="Test Event",
             description="Test Description",
@@ -117,7 +115,7 @@ class InvitationViewTestCase(TestCase):
         self.other_user = User.objects.create_user(
             username="otheruser", email="other@example.com", password="testpass123"
         )
-        
+
         self.event = Event.objects.create(
             title="Test Event",
             description="Test Description",
@@ -141,11 +139,11 @@ class InvitationViewTestCase(TestCase):
     def test_invitation_list_success(self):
         """Test invitation list view displays invitations"""
         invitation = Invitation.objects.create(event=self.event, invitee=self.invitee)
-        
+
         # Verify the invitation was created with pending status
         self.assertEqual(invitation.status, "pending")
         self.assertEqual(Invitation.objects.filter(event=self.event, status="pending").count(), 1)
-        
+
         self.client.login(username="organizer", password="testpass123")
         url = reverse("guests:invitation_list", kwargs={"event_pk": self.event.pk})
         response = self.client.get(url)
@@ -179,7 +177,7 @@ class InvitationViewTestCase(TestCase):
         }
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, 302)
-        
+
         # Check invitation was created
         invitation = Invitation.objects.get(event=self.event, invitee=self.invitee)
         self.assertEqual(invitation.notes, "Please join us!")
@@ -189,19 +187,19 @@ class InvitationViewTestCase(TestCase):
         """Test accepting an invitation"""
         invitation = Invitation.objects.create(event=self.event, invitee=self.invitee)
         self.client.login(username="invitee", password="testpass123")
-        
+
         url = reverse("guests:invitation_respond", kwargs={"pk": invitation.pk, "action": "accept"})
         response = self.client.post(url)
         self.assertEqual(response.status_code, 302)
-        
+
         # Check invitation was accepted
         invitation.refresh_from_db()
         self.assertEqual(invitation.status, "accepted")
         self.assertIsNotNone(invitation.responded_at)
-        
+
         # Check guest was created
         self.assertTrue(Guest.objects.filter(event=self.event, user=self.invitee).exists())
-        
+
         # Check RSVP was created
         guest = Guest.objects.get(event=self.event, user=self.invitee)
         self.assertTrue(RSVP.objects.filter(guest=guest).exists())
@@ -210,23 +208,23 @@ class InvitationViewTestCase(TestCase):
         """Test declining an invitation"""
         invitation = Invitation.objects.create(event=self.event, invitee=self.invitee)
         self.client.login(username="invitee", password="testpass123")
-        
+
         url = reverse("guests:invitation_respond", kwargs={"pk": invitation.pk, "action": "decline"})
         response = self.client.post(url)
         self.assertEqual(response.status_code, 302)
-        
+
         # Check invitation was declined
         invitation.refresh_from_db()
         self.assertEqual(invitation.status, "declined")
         self.assertIsNotNone(invitation.responded_at)
-        
+
         # Check guest was not created
         self.assertFalse(Guest.objects.filter(event=self.event, user=self.invitee).exists())
 
     def test_my_invitations_view(self):
         """Test my invitations view shows user's invitations"""
         pending_invitation = Invitation.objects.create(event=self.event, invitee=self.invitee)
-        
+
         # Create another event and accepted invitation
         event2 = Event.objects.create(
             title="Another Event",
@@ -243,11 +241,11 @@ class InvitationViewTestCase(TestCase):
         accepted_invitation = Invitation.objects.create(
             event=event2, invitee=self.invitee, status="accepted", responded_at=timezone.now()
         )
-        
+
         self.client.login(username="invitee", password="testpass123")
         url = reverse("guests:my_invitations")
         response = self.client.get(url)
-        
+
         self.assertEqual(response.status_code, 200)
         self.assertIn(pending_invitation, response.context["pending_invitations"])
         self.assertIn(accepted_invitation, response.context["responded_invitations"])
@@ -255,13 +253,13 @@ class InvitationViewTestCase(TestCase):
     def test_invitation_delete_requires_organizer(self):
         """Test that only the event organizer can cancel invitations"""
         invitation = Invitation.objects.create(event=self.event, invitee=self.invitee)
-        
+
         # Try as another user
         self.client.login(username="otheruser", password="testpass123")
         url = reverse("guests:invitation_delete", kwargs={"pk": invitation.pk})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 404)
-        
+
         # Try as organizer
         self.client.login(username="organizer", password="testpass123")
         response = self.client.get(url)
@@ -278,9 +276,13 @@ class GuestViewTestCase(TestCase):
             username="organizer", email="organizer@example.com", password="testpass123"
         )
         self.guest_user = User.objects.create_user(
-            username="guestuser", email="guest@example.com", password="testpass123", first_name="Jane", last_name="Smith"
+            username="guestuser",
+            email="guest@example.com",
+            password="testpass123",
+            first_name="Jane",
+            last_name="Smith",
         )
-        
+
         self.event = Event.objects.create(
             title="Test Event",
             description="Test Description",
@@ -293,7 +295,7 @@ class GuestViewTestCase(TestCase):
             max_capacity=100,
             created_by=self.organizer,
         )
-        
+
         self.guest = Guest.objects.create(event=self.event, user=self.guest_user)
         self.rsvp = RSVP.objects.create(guest=self.guest)
 
@@ -318,7 +320,7 @@ class GuestViewTestCase(TestCase):
         guest_pk = self.guest.pk
         url = reverse("guests:guest_delete", kwargs={"pk": guest_pk})
         response = self.client.post(url)
-        
+
         self.assertEqual(response.status_code, 302)
         self.assertFalse(Guest.objects.filter(pk=guest_pk).exists())
 
@@ -335,7 +337,7 @@ class RSVPViewTestCase(TestCase):
         self.guest_user = User.objects.create_user(
             username="guestuser", email="guest@example.com", password="testpass123"
         )
-        
+
         self.event = Event.objects.create(
             title="Test Event",
             description="Test Description",
@@ -348,7 +350,7 @@ class RSVPViewTestCase(TestCase):
             max_capacity=100,
             created_by=self.organizer,
         )
-        
+
         self.guest = Guest.objects.create(event=self.event, user=self.guest_user)
         self.rsvp = RSVP.objects.create(guest=self.guest)
 
@@ -370,7 +372,7 @@ class RSVPViewTestCase(TestCase):
         }
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, 302)
-        
+
         self.rsvp.refresh_from_db()
         self.assertEqual(self.rsvp.status, "accepted")
         self.assertEqual(self.rsvp.number_of_guests, 2)
@@ -384,10 +386,8 @@ class InvitationTemplateTagTestCase(TestCase):
         self.organizer = User.objects.create_user(
             username="organizer", email="organizer@example.com", password="testpass123"
         )
-        self.invitee = User.objects.create_user(
-            username="invitee", email="invitee@example.com", password="testpass123"
-        )
-        
+        self.invitee = User.objects.create_user(username="invitee", email="invitee@example.com", password="testpass123")
+
         self.event = Event.objects.create(
             title="Test Event",
             description="Test Description",
@@ -404,7 +404,7 @@ class InvitationTemplateTagTestCase(TestCase):
     def test_get_pending_invitation_count(self):
         """Test getting pending invitation count"""
         from guests.templatetags.invitation_tags import get_pending_invitation_count
-        
+
         # Create pending invitations
         Invitation.objects.create(event=self.event, invitee=self.invitee, status="pending")
         Invitation.objects.create(
@@ -412,6 +412,6 @@ class InvitationTemplateTagTestCase(TestCase):
             invitee=User.objects.create_user(username="user2", email="user2@example.com", password="pass"),
             status="accepted",
         )
-        
+
         count = get_pending_invitation_count(self.invitee)
         self.assertEqual(count, 1)

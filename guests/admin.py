@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Guest, Invitation, RSVP
+from .models import RSVP, Guest, Invitation
 
 
 @admin.register(Invitation)

@@ -11,4 +11,3 @@ def get_pending_invitation_count(user):
     if user.is_authenticated:
         return Invitation.objects.filter(invitee=user, status="pending").count()
     return 0
-
