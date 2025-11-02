@@ -50,6 +50,14 @@ class BudgetItemUpdateView(LoginRequiredMixin, UpdateView):
     form_class = BudgetItemForm
     template_name = "budget/budgetitem_form.html"
 
+    def get_queryset(self):
+        return BudgetItem.objects.filter(event__created_by=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["event"] = self.object.event
+        return context
+
     def get_success_url(self):
         return reverse_lazy("budget:budget_list", kwargs={"event_pk": self.object.event.pk})
 
@@ -57,6 +65,9 @@ class BudgetItemUpdateView(LoginRequiredMixin, UpdateView):
 class BudgetItemDeleteView(LoginRequiredMixin, DeleteView):
     model = BudgetItem
     template_name = "budget/budgetitem_confirm_delete.html"
+
+    def get_queryset(self):
+        return BudgetItem.objects.filter(event__created_by=self.request.user)
 
     def get_success_url(self):
         return reverse_lazy("budget:budget_list", kwargs={"event_pk": self.object.event.pk})
