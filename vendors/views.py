@@ -55,6 +55,11 @@ class EventVendorCreateView(LoginRequiredMixin, CreateView):
     form_class = EventVendorForm
     template_name = "vendors/eventvendor_form.html"
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["event"] = get_object_or_404(Event, pk=self.kwargs["event_pk"])
+        return kwargs
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["event"] = get_object_or_404(Event, pk=self.kwargs["event_pk"])

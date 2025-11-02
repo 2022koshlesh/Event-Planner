@@ -37,6 +37,7 @@
                 <tr>
                     <th>Category</th>
                     <th>Name</th>
+                    <th>Vendor</th>
                     <th>Estimated Cost</th>
                     <th>Actual Cost</th>
                     <th>Status</th>
@@ -49,13 +50,26 @@
                     <tr>
                         <td>{{ item.get_category_display }}</td>
                         <td>{{ item.name }}</td>
+                        <td>
+                            {% if item.vendor %}
+                                <span class="badge bg-primary" title="{{ item.vendor.service_description }}">
+                                    <i class="bi bi-briefcase"></i> {{ item.vendor.vendor.name }}
+                                </span>
+                            {% else %}
+                                <span class="text-muted">—</span>
+                            {% endif %}
+                        </td>
                         <td>${{ item.estimated_cost }}</td>
                         <td>{% if item.actual_cost %}${{ item.actual_cost }}{% else %}N/A{% endif %}</td>
                         <td><span class="badge bg-info">{{ item.get_status_display }}</span></td>
                         <td>{{ item.payment_date|date:"M d, Y"|default:"N/A" }}</td>
                         <td>
-                            <a href="{% url 'budget:budgetitem_edit' item.pk %}" class="btn btn-sm btn-warning">Edit</a>
-                            <a href="{% url 'budget:budgetitem_delete' item.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                            <a href="{% url 'budget:budgetitem_edit' item.pk %}" class="btn btn-sm btn-warning">
+                                <i class="bi bi-pencil"></i> Edit
+                            </a>
+                            <a href="{% url 'budget:budgetitem_delete' item.pk %}" class="btn btn-sm btn-danger">
+                                <i class="bi bi-trash"></i> Delete
+                            </a>
                         </td>
                     </tr>
                 {% endfor %}
@@ -64,7 +78,8 @@
     </div>
 {% else %}
     <div class="alert alert-info">
-        No budget items yet. <a href="{% url 'budget:budgetitem_create' event.pk %}">Add your first budget item</a>!
+        <i class="bi bi-info-circle"></i> No budget items yet. 
+        <a href="{% url 'budget:budgetitem_create' event.pk %}">Add your first budget item</a>!
     </div>
 {% endif %}
 {% endblock %}

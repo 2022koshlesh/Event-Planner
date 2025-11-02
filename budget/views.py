@@ -5,6 +5,7 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
 from events.models import Event
+from vendors.models import EventVendor
 
 from .forms import BudgetItemForm
 from .models import BudgetItem
@@ -17,7 +18,7 @@ class BudgetListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         self.event = get_object_or_404(Event, pk=self.kwargs["event_pk"], created_by=self.request.user)
-        return BudgetItem.objects.filter(event=self.event)
+        return BudgetItem.objects.filter(event=self.event).select_related("vendor__vendor")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -32,9 +33,16 @@ class BudgetItemCreateView(LoginRequiredMixin, CreateView):
     form_class = BudgetItemForm
     template_name = "budget/budgetitem_form.html"
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["event"] = get_object_or_404(Event, pk=self.kwargs["event_pk"])
+        return kwargs
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["event"] = get_object_or_404(Event, pk=self.kwargs["event_pk"])
+        event = get_object_or_404(Event, pk=self.kwargs["event_pk"])
+        context["event"] = event
+        context["event_vendors"] = EventVendor.objects.filter(event=event).select_related("vendor")
         return context
 
     def form_valid(self, form):
@@ -53,9 +61,15 @@ class BudgetItemUpdateView(LoginRequiredMixin, UpdateView):
     def get_queryset(self):
         return BudgetItem.objects.filter(event__created_by=self.request.user)
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["event"] = self.object.event
+        return kwargs
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["event"] = self.object.event
+        context["event_vendors"] = EventVendor.objects.filter(event=self.object.event).select_related("vendor")
         return context
 
     def get_success_url(self):
