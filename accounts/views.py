@@ -22,4 +22,4 @@ class UserLoginView(LoginView):
 
 
 class UserLogoutView(LogoutView):
-    pass
+    next_page = reverse_lazy("accounts:login")

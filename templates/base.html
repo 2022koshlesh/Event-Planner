@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Event Planning Platform{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
@@ -19,7 +20,27 @@
                         <li class="nav-item"><a class="nav-link" href="{% url 'events:dashboard' %}">Dashboard</a></li>
                         <li class="nav-item"><a class="nav-link" href="{% url 'events:event_list' %}">Events</a></li>
                         <li class="nav-item"><a class="nav-link" href="{% url 'vendors:vendor_list' %}">Vendors</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'accounts:logout' %}">Logout ({{ user.username }})</a></li>
+                        <li class="nav-item">
+                            <a class="nav-link position-relative" href="{% url 'guests:my_invitations' %}">
+                                <i class="bi bi-envelope-heart"></i> My Invitations
+                                {% load invitation_tags %}
+                                {% get_pending_invitation_count user as pending_count %}
+                                {% if pending_count > 0 %}
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                    {{ pending_count }}
+                                    <span class="visually-hidden">pending invitations</span>
+                                </span>
+                                {% endif %}
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <form method="post" action="{% url 'accounts:logout' %}" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="nav-link btn btn-link" style="border: none; background: none; cursor: pointer;">
+                                    Logout ({{ user.username }})
+                                </button>
+                            </form>
+                        </li>
                     {% else %}
                         <li class="nav-item"><a class="nav-link" href="{% url 'accounts:login' %}">Login</a></li>
                         <li class="nav-item"><a class="nav-link" href="{% url 'accounts:register' %}">Register</a></li>

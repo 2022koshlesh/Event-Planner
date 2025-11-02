@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block title %}My Event Invitations{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">
+        <i class="bi bi-envelope-heart"></i> My Event Invitations
+    </h1>
+
+    {% if pending_invitations %}
+    <div class="card mb-4">
+        <div class="card-header bg-warning text-dark">
+            <h3><i class="bi bi-clock-history"></i> Pending Invitations</h3>
+        </div>
+        <div class="card-body">
+            {% for invitation in pending_invitations %}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h4>{{ invitation.event.title }}</h4>
+                            <p class="mb-1">
+                                <strong><i class="bi bi-calendar"></i> Date:</strong> 
+                                {{ invitation.event.start_date|date:"F d, Y g:i A" }} - 
+                                {{ invitation.event.end_date|date:"F d, Y g:i A" }}
+                            </p>
+                            <p class="mb-1">
+                                <strong><i class="bi bi-geo-alt"></i> Venue:</strong> {{ invitation.event.venue }}
+                            </p>
+                            <p class="mb-1">
+                                <strong><i class="bi bi-person"></i> Organized by:</strong> 
+                                {{ invitation.event.created_by.get_full_name|default:invitation.event.created_by.username }}
+                            </p>
+                            {% if invitation.notes %}
+                            <p class="mb-1">
+                                <strong><i class="bi bi-chat-quote"></i> Message:</strong> 
+                                <em>{{ invitation.notes }}</em>
+                            </p>
+                            {% endif %}
+                            <p class="text-muted mb-0">
+                                <small>Invited on {{ invitation.invited_at|date:"M d, Y g:i A" }}</small>
+                            </p>
+                        </div>
+                        <div class="col-md-4 d-flex flex-column justify-content-center align-items-end">
+                            <form method="post" action="{% url 'guests:invitation_respond' invitation.pk 'accept' %}" class="mb-2 w-100">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-success w-100">
+                                    <i class="bi bi-check-circle"></i> Accept
+                                </button>
+                            </form>
+                            <form method="post" action="{% url 'guests:invitation_respond' invitation.pk 'decline' %}" class="w-100">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger w-100">
+                                    <i class="bi bi-x-circle"></i> Decline
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if responded_invitations %}
+    <div class="card">
+        <div class="card-header">
+            <h3><i class="bi bi-check2-all"></i> Responded Invitations</h3>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Event</th>
+                            <th>Date</th>
+                            <th>Organizer</th>
+                            <th>Status</th>
+                            <th>Responded At</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for invitation in responded_invitations %}
+                        <tr>
+                            <td>
+                                <strong>{{ invitation.event.title }}</strong><br>
+                                <small class="text-muted">{{ invitation.event.venue }}</small>
+                            </td>
+                            <td>{{ invitation.event.start_date|date:"M d, Y" }}</td>
+                            <td>{{ invitation.event.created_by.get_full_name|default:invitation.event.created_by.username }}</td>
+                            <td>
+                                {% if invitation.status == 'accepted' %}
+                                    <span class="badge bg-success">
+                                        <i class="bi bi-check-circle"></i> Accepted
+                                    </span>
+                                {% elif invitation.status == 'declined' %}
+                                    <span class="badge bg-danger">
+                                        <i class="bi bi-x-circle"></i> Declined
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td>{{ invitation.responded_at|date:"M d, Y g:i A" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if not pending_invitations and not responded_invitations %}
+    <div class="alert alert-info">
+        <i class="bi bi-info-circle"></i> You don't have any event invitations at the moment.
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+

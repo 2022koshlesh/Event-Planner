@@ -3,59 +3,131 @@
 {% block title %}Guests - {{ event.title }}{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h1>Guests for {{ event.title }}</h1>
-    <div>
-        <a href="{% url 'guests:guest_create' event.pk %}" class="btn btn-primary">Add Guest</a>
-        <a href="{% url 'events:event_detail' event.pk %}" class="btn btn-secondary">Back to Event</a>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Confirmed Guests for {{ event.title }}</h1>
+        <div>
+            <a href="{% url 'guests:invitation_list' event.pk %}" class="btn btn-primary">
+                <i class="bi bi-envelope"></i> Manage Invitations
+            </a>
+            <a href="{% url 'events:event_detail' event.pk %}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Event
+            </a>
+        </div>
     </div>
-</div>
 
-{% if guests %}
-    <div class="table-responsive">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Phone</th>
-                    <th>RSVP Status</th>
-                    <th>Guests</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for guest in guests %}
-                    <tr>
-                        <td>{{ guest.first_name }} {{ guest.last_name }}</td>
-                        <td>{{ guest.email }}</td>
-                        <td>{{ guest.phone_number|default:"N/A" }}</td>
-                        <td>
-                            {% if guest.rsvp %}
-                                <span class="badge bg-{% if guest.rsvp.status == 'accepted' %}success{% elif guest.rsvp.status == 'declined' %}danger{% else %}warning{% endif %}">
-                                    {{ guest.rsvp.get_status_display }}
-                                </span>
-                            {% else %}
-                                <span class="badge bg-secondary">No RSVP</span>
-                            {% endif %}
-                        </td>
-                        <td>{% if guest.rsvp %}{{ guest.rsvp.number_of_guests }}{% else %}N/A{% endif %}</td>
-                        <td>
-                            <a href="{% url 'guests:guest_edit' guest.pk %}" class="btn btn-sm btn-warning">Edit</a>
-                            {% if guest.rsvp %}
-                                <a href="{% url 'guests:rsvp_edit' guest.rsvp.pk %}" class="btn btn-sm btn-info">RSVP</a>
-                            {% endif %}
-                            <a href="{% url 'guests:guest_delete' guest.pk %}" class="btn btn-sm btn-danger">Delete</a>
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    {% if guests %}
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Confirmed Guests ({{ guests|length }})</h5>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>RSVP Status</th>
+                            <th>Number of Guests</th>
+                            <th>Added At</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for guest in guests %}
+                        <tr>
+                            <td>{{ guest.user.get_full_name|default:guest.user.username }}</td>
+                            <td>{{ guest.user.email }}</td>
+                            <td>
+                                {% if guest.rsvp %}
+                                    {% if guest.rsvp.status == 'pending' %}
+                                        <span class="badge bg-warning">Pending</span>
+                                    {% elif guest.rsvp.status == 'accepted' %}
+                                        <span class="badge bg-success">Accepted</span>
+                                    {% elif guest.rsvp.status == 'declined' %}
+                                        <span class="badge bg-danger">Declined</span>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="badge bg-secondary">No RSVP</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if guest.rsvp %}
+                                    {{ guest.rsvp.number_of_guests }}
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </td>
+                            <td>{{ guest.added_at|date:"M d, Y g:i A" }}</td>
+                            <td>
+                                {% if guest.rsvp %}
+                                <a href="{% url 'guests:rsvp_edit' guest.rsvp.pk %}" class="btn btn-sm btn-primary">
+                                    <i class="bi bi-pencil"></i> Edit RSVP
+                                </a>
+                                {% endif %}
+                                <a href="{% url 'guests:guest_delete' guest.pk %}" class="btn btn-sm btn-danger">
+                                    <i class="bi bi-trash"></i> Remove
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
-{% else %}
+
+    <div class="card mt-4">
+        <div class="card-body">
+            <h5 class="card-title">Summary</h5>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="text-center">
+                        <h3>{{ guests|length }}</h3>
+                        <p class="text-muted">Total Guests</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-center">
+                        <h3 class="text-success">
+                            {% with accepted_count=guests|length %}
+                            {% for guest in guests %}
+                                {% if guest.rsvp.status == 'accepted' %}
+                                    {{ forloop.counter }}
+                                {% endif %}
+                            {% endfor %}
+                            {% endwith %}
+                        </h3>
+                        <p class="text-muted">Accepted RSVPs</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-center">
+                        <h3>
+                            {% with total=0 %}
+                            {% for guest in guests %}
+                                {% if guest.rsvp %}
+                                    {{ total|add:guest.rsvp.number_of_guests }}
+                                {% endif %}
+                            {% endfor %}
+                            {% endwith %}
+                        </h3>
+                        <p class="text-muted">Total Attendees</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-center">
+                        <h3>{{ event.max_capacity }}</h3>
+                        <p class="text-muted">Venue Capacity</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
     <div class="alert alert-info">
-        No guests yet. <a href="{% url 'guests:guest_create' event.pk %}">Add your first guest</a>!
+        <i class="bi bi-info-circle"></i> No confirmed guests yet. 
+        <a href="{% url 'guests:invitation_list' event.pk %}">Send invitations</a> to get started!
     </div>
-{% endif %}
+    {% endif %}
+</div>
 {% endblock %}
-

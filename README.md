@@ -1,20 +1,44 @@
 # Event Planning Platform
 
-A beginner-friendly Django web application for managing events, tracking guests, handling RSVPs, managing budgets, and coordinating with vendors.
+A Django web application for managing events with a comprehensive invitation system, guest tracking, RSVP management, budget monitoring, and vendor coordination.
 
 ## Features
 
-- **Event Management** - Create, edit, and manage multiple events
-- **Guest Management** - Track guest lists and manage RSVPs
-- **Budget Tracking** - Monitor estimated vs actual costs for events
-- **Vendor Management** - Manage vendor database and event assignments
+### 🎉 Event Management
+- Create, edit, and manage multiple events
+- Track event details (date, venue, capacity, status)
+- Event dashboard with statistics
+
+### 📨 Invitation System
+- **Send Invitations** - Invite registered users to your events
+- **Real-time Notifications** - Red badge shows pending invitations count
+- **Accept/Decline** - One-click invitation response system
+- **Invitation Tracking** - Monitor pending, accepted, and declined invitations
+- **Personal Messages** - Add optional notes when sending invitations
+- **Secure Authorization** - Only event organizers can manage invitations
+
+### 👥 Guest Management
+- View confirmed guests (users who accepted invitations)
+- Track RSVP status (pending, accepted, declined)
+- Manage number of attendees per guest
+- Guest statistics dashboard
+
+### 💰 Budget Tracking
+- Monitor estimated vs actual costs for events
+- Track expenses by category
+
+### 🏢 Vendor Management
+- Manage vendor database and event assignments
+- Track vendor contact information
 
 ## Tech Stack
 
 - **Backend:** Django 5.0+
 - **Database:** SQLite (development) with easy PostgreSQL migration path
-- **Frontend:** Bootstrap 5, Django Templates
-- **Email:** Gmail SMTP
+- **Frontend:** Bootstrap 5, Bootstrap Icons, Django Templates
+- **Forms:** Django Crispy Forms with Bootstrap 5
+- **Authentication:** Django built-in auth system
+- **Email:** Gmail SMTP (configured for notifications)
 
 ## Installation
 
@@ -95,13 +119,85 @@ event_planning_platform/
 
 ## Usage
 
-1. Register a new account or login
-2. Create your first event
-3. Add guests to your event
-4. Track your event budget
-5. Assign vendors to your event
+### Getting Started
+
+1. **Register an Account**
+   - Navigate to http://localhost:8000
+   - Click "Register" and create your account
+   - You'll be automatically logged in
+
+2. **Create Your First Event**
+   - Click "Events" → "Create Event"
+   - Fill in event details (title, date, venue, capacity, etc.)
+   - Submit to create the event
+
+### Invitation Workflow (Event Organizer)
+
+3. **Send Invitations**
+   - Go to your event details page
+   - Click "Manage Invitations"
+   - Click "Send Invitation"
+   - Select a registered user from the dropdown
+   - Add an optional personal message
+   - Submit to send the invitation
+
+4. **Track Invitations**
+   - View invitation statistics (pending, accepted, declined)
+   - See all invitations in a detailed table
+   - Cancel pending invitations if needed
+
+5. **Manage Confirmed Guests**
+   - Click "View Confirmed Guests"
+   - See all users who accepted your invitation
+   - Edit RSVP details (status, number of attendees, notes)
+   - Remove guests if needed
+
+### Invitation Workflow (Invitee)
+
+1. **View Your Invitations**
+   - When invited, you'll see a red notification badge on "My Invitations" in the navbar
+   - Click "My Invitations" to view all pending invitations
+
+2. **Respond to Invitations**
+   - Review event details, organizer, and personal message
+   - Click "Accept" to confirm attendance
+   - Click "Decline" to reject the invitation
+   - View your invitation history (past responses)
+
+### Additional Features
+
+- **Budget Tracking** - Add and monitor expenses for your events
+- **Vendor Management** - Create vendor profiles and assign them to events
+- **Dashboard** - View overview of all your events and activities
 
 ## Development
+
+### Running Tests
+
+```bash
+# Run all tests
+python manage.py test
+
+# Run tests for a specific app
+python manage.py test guests
+python manage.py test events
+python manage.py test budget
+python manage.py test vendors
+
+# Run with verbose output
+python manage.py test -v 2
+
+# Run specific test class or method
+python manage.py test guests.tests.InvitationViewTestCase
+python manage.py test guests.tests.InvitationViewTestCase.test_invitation_create_post_success
+```
+
+**Test Coverage:**
+- ✅ Invitation System: 21 comprehensive tests
+  - Model tests (Invitation, Guest, RSVP)
+  - View tests (Create, List, Respond, Delete)
+  - Authorization and security tests
+  - Template tag tests
 
 ### Code Quality
 
@@ -124,6 +220,7 @@ fix: Fix bug
 docs: Update documentation
 style: Format code
 refactor: Refactor code
+test: Add or update tests
 ```
 
 ## CI/CD
@@ -137,18 +234,178 @@ GitHub Actions runs linting checks on every push/PR:
 
 See [docs/project_plan.md](docs/project_plan.md) for the complete implementation plan.
 
-##  Roadmap
+## Roadmap
 
 **Phase 1:** Foundation ✅
-- User authentication
+- User authentication and authorization
 - Event CRUD operations
-- Basic dashboard
+- User dashboard with event overview
 
-**Phase 2:** Guest Management (In Progress)
-- Guest list management
-- RSVP system
+**Phase 2:** Invitation & Guest Management ✅
+- User-based invitation system
+- Real-time notification badges
+- Accept/Decline invitation workflow
+- Guest list management for confirmed attendees
+- RSVP tracking system
+- Comprehensive test coverage (21 tests)
 
-**Phase 3-6:** Remaining features
-- Budget tracking enhancements
-- Vendor management features
-- UI improvements
+**Phase 3:** Budget Management (In Progress)
+- Budget category management
+- Expense tracking
+- Budget vs actual cost analysis
+- Budget reports and visualizations
+
+**Phase 4:** Vendor Management
+- Enhanced vendor profiles
+- Vendor assignment to events
+- Vendor contact management
+- Vendor performance tracking
+
+**Phase 5:** Enhancements
+- Email notifications for invitations
+- Calendar integration
+- Event templates
+- Export guest lists
+- Advanced reporting
+
+**Phase 6:** Polish & Optimization
+- UI/UX improvements
+- Performance optimization
+- Mobile responsiveness
+- Additional security features
+
+## Key Features Implemented
+
+### Invitation System (Latest)
+- ✅ Send invitations to registered users
+- ✅ Invitation status tracking (pending/accepted/declined)
+- ✅ Real-time notification badges in navbar
+- ✅ Personal messages with invitations
+- ✅ One-click accept/decline functionality
+- ✅ Invitation history for users
+- ✅ Secure authorization (organizers only)
+- ✅ Guest management for accepted invitations
+- ✅ RSVP details management
+- ✅ Comprehensive test suite
+
+### Security Features
+- ✅ User authentication required for all actions
+- ✅ Authorization checks (users can only manage their own events)
+- ✅ CSRF protection on all forms
+- ✅ Secure logout with POST method
+- ✅ Database integrity with unique constraints
+
+## API Endpoints
+
+### Invitations
+- `GET /event/<event_id>/invitations/` - List invitations for an event
+- `GET /event/<event_id>/invitations/send/` - Send invitation form
+- `POST /event/<event_id>/invitations/send/` - Create invitation
+- `POST /invitations/<id>/cancel/` - Cancel pending invitation
+- `GET /my-invitations/` - View user's invitations
+- `POST /invitations/<id>/accept/` - Accept invitation
+- `POST /invitations/<id>/decline/` - Decline invitation
+
+### Guests
+- `GET /event/<event_id>/guests/` - List confirmed guests
+- `POST /guests/<id>/remove/` - Remove guest from event
+
+### RSVP
+- `GET /rsvp/<id>/edit/` - Edit RSVP details
+- `POST /rsvp/<id>/edit/` - Update RSVP
+
+## Database Models
+
+### Core Models
+
+**Invitation**
+- Links an invitee (User) to an Event
+- Status: pending, accepted, declined
+- Tracks invited_at and responded_at timestamps
+- Optional notes from organizer
+- Unique constraint: one invitation per user per event
+
+**Guest**
+- Links a User to an Event (created when invitation is accepted)
+- References the original Invitation
+- Tracks when user was added as confirmed guest
+- Unique constraint: one guest record per user per event
+
+**RSVP**
+- Linked to a Guest
+- Status: pending, accepted, declined
+- Tracks number_of_guests (attendees)
+- Optional response_date and notes
+
+**Event**
+- Core event details (title, description, dates, venue, etc.)
+- Links to event organizer (User)
+- Tracks event type and status
+
+## Troubleshooting
+
+### Database Issues
+
+**Problem:** `no such table: guests_invitation`
+
+**Solution:**
+```bash
+# Delete database and recreate
+rm db.sqlite3
+
+# Run migrations
+python manage.py migrate
+
+# Create new superuser
+python manage.py createsuperuser
+```
+
+### Logout Issue
+
+**Problem:** "Method Not Allowed (GET): /accounts/logout/"
+
+**Solution:** The logout has been fixed to use POST method for security. Click the logout button in the navbar.
+
+### Migration Conflicts
+
+**Problem:** Migration conflicts after model changes
+
+**Solution:**
+```bash
+# Show current migration status
+python manage.py showmigrations
+
+# If needed, fake the migration
+python manage.py migrate guests --fake zero
+python manage.py migrate guests
+```
+
+### Missing Dependencies
+
+**Problem:** Import errors or missing modules
+
+**Solution:**
+```bash
+# Install/update all dependencies
+pip install -r requirements.txt
+
+# For development dependencies
+pip install flake8 black isort
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Follow the commit convention
+4. Write tests for new features
+5. Ensure all tests pass (`python manage.py test`)
+6. Submit a Pull Request
+
+## License
+
+This project is for educational purposes.
+
+## Support
+
+For issues, questions, or contributions, please open an issue on the repository.
