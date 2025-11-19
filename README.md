@@ -1,4 +1,26 @@
 # Event Planning Platform
+# SnapShots
+
+<img width="1919" height="940" alt="Screenshot 2025-11-19 141701" src="https://github.com/user-attachments/assets/47e41c5d-5b2f-49d6-812f-3c2e82ba713f" />
+
+<img width="1919" height="933" alt="Screenshot 2025-11-19 141719" src="https://github.com/user-attachments/assets/806963fa-fc95-4e98-bdcf-06fd22663436" />
+
+<img width="1919" height="940" alt="Screenshot 2025-11-19 141822" src="https://github.com/user-attachments/assets/f7326188-d38c-4251-9468-c12638da3da3" />
+
+<img width="1919" height="931" alt="Screenshot 2025-11-19 141854" src="https://github.com/user-attachments/assets/2baa3889-565e-48d4-a8ee-dbb6858c9fce" />
+
+<img width="1919" height="938" alt="Screenshot 2025-11-19 141910" src="https://github.com/user-attachments/assets/f5eb9411-3827-4784-8256-42b3ba951551" />
+
+<img width="1916" height="935" alt="Screenshot 2025-11-19 141924" src="https://github.com/user-attachments/assets/4999183f-8db7-44f4-b439-355860520d20" />
+
+<img width="1919" height="932" alt="Screenshot 2025-11-19 142019" src="https://github.com/user-attachments/assets/a5c11b5d-4d0e-45d7-85cc-8b9feacd132c" />
+
+<img width="1919" height="935" alt="Screenshot 2025-11-19 142044" src="https://github.com/user-attachments/assets/e2bd7e8c-ad4e-4298-9254-d6cf38e16837" />
+
+
+
+
+
 
 A Django web application for managing events with a comprehensive invitation system, guest tracking, RSVP management, budget monitoring, and vendor coordination.
 
@@ -410,3 +432,4 @@ This project is for educational purposes.
 
 For issues, questions, or contributions, please open an issue on the repository.
 #
+
