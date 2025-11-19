@@ -409,5 +409,4 @@ This project is for educational purposes.
 ## Support
 
 For issues, questions, or contributions, please open an issue on the repository.
-#   E v e n t - P l a n n e r  
- 
+#
