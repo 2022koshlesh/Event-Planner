@@ -15,7 +15,7 @@
 
 <img width="1919" height="932" alt="Screenshot 2025-11-19 142019" src="https://github.com/user-attachments/assets/a5c11b5d-4d0e-45d7-85cc-8b9feacd132c" />
 
-<img width="1919" height="935" alt="Screenshot 2025-11-19 142044" src="https://github.com/user-attachments/assets/e2bd7e8c-ad4e-4298-9254-d6cf38e16837" />
+<img width="1919" height="935" alt="Screenshot 2025-11-19 142044" src="https://github.com/user-attachments/assets/e2bd7e8c-ad4e-4298-9254-d6cf38e16837" /> 
 
 
 
@@ -432,4 +432,5 @@ This project is for educational purposes.
 
 For issues, questions, or contributions, please open an issue on the repository.
 #
+
 
